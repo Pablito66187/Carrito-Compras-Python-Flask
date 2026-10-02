@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Vivero Raíz &middot; Catálogo{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>Raíces para cada rincón de tu casa</h1>
+    <p>Plantas de interior, exterior y suculentas, elegidas y empacadas a mano.</p>
+</section>
+
+<div class="catalog-layout">
+    <aside class="filters">
+        <h2>Categorías</h2>
+        <ul>
+            <li><a href="{{ url_for('index') }}" class="{{ 'activa' if not categoria_activa }}">Todas</a></li>
+            {% for c in categorias %}
+            <li><a href="{{ url_for('index', categoria=c.id) }}" class="{{ 'activa' if categoria_activa == c.id }}">{{ c.nombre }}</a></li>
+            {% endfor %}
+        </ul>
+    </aside>
+
+    <div class="product-grid">
+        {% for p in productos %}
+        <article class="product-card">
+            <a href="{{ url_for('producto_detalle', producto_id=p.id) }}" class="product-image-link">
+                <div class="product-image-placeholder">{{ p.nombre[:1] }}</div>
+            </a>
+            <div class="product-info">
+                <a href="{{ url_for('producto_detalle', producto_id=p.id) }}" class="product-name">{{ p.nombre }}</a>
+                <p class="product-price">${{ "%.2f"|format(p.precio) }}</p>
+                <p class="product-stock">{{ p.stock }} disponibles</p>
+                <button class="btn-add" data-producto-id="{{ p.id }}" {% if p.stock == 0 %}disabled{% endif %}>
+                    {{ "Agregar al carrito" if p.stock > 0 else "Agotado" }}
+                </button>
+            </div>
+        </article>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

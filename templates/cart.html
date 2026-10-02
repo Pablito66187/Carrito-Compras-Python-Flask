@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Tu carrito &middot; Vivero Raíz{% endblock %}
+
+{% block content %}
+<h1>Tu carrito</h1>
+
+{% if items %}
+<table class="cart-table">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Subtotal</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody id="cart-body">
+        {% for item in items %}
+        <tr data-producto-id="{{ item.producto_id }}">
+            <td>{{ item.nombre }}</td>
+            <td class="precio-unitario">${{ "%.2f"|format(item.precio) }}</td>
+            <td>
+                <input type="number" class="cantidad-input" min="1" max="{{ item.stock }}" value="{{ item.cantidad }}">
+            </td>
+            <td class="subtotal">${{ "%.2f"|format(item.subtotal) }}</td>
+            <td><button class="btn-remove">Eliminar</button></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="cart-summary">
+    <p>Total: <strong id="cart-total">${{ "%.2f"|format(total) }}</strong></p>
+    <form action="{{ url_for('checkout') }}" method="post">
+        <button type="submit" class="btn-add btn-large">Confirmar pedido</button>
+    </form>
+</div>
+{% else %}
+<p class="empty-cart">Tu carrito está vacío. <a href="{{ url_for('index') }}">Ir al catálogo</a></p>
+{% endif %}
+{% endblock %}
